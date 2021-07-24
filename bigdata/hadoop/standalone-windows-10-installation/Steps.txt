@@ -1,0 +1,2 @@
+Refer to the installation steps given here.
+https://medium.com/analytics-vidhya/hadoop-setting-up-a-single-node-cluster-in-windows-4221aab69aa6
