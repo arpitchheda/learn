@@ -1,0 +1,9 @@
+1. Download and Install Oracle VM Virtual Box 
+https://www.virtualbox.org/wiki/Downloads
+
+2. Download and Install MapR Sandbox
+https://mapr.com/try-mapr/sandbox/
+
+Follow the installation instructions 
+https://docs.datafabric.hpe.com/61/SandboxHadoop/t_install_sandbox_vbox.html
+
