@@ -1,0 +1,36 @@
+## Create a directory in the Local File System
+mkdir -p /home/mapr/wordcount/python
+
+## Go to the directory in the Local File System.
+cd /home/mapr/wordcount/python
+
+## Upload the python 'mapper.py' , 'reducer.py' files using WinScp / File Zilla etc tools.
+
+## Run Locally Code using Python.
+cat $HOME/wordcount/input.txt | python $HOME/wordcount/python/mapper.py | sort -k1,1 | python $HOME/wordcount/python/reducer.py
+
+## Make Sure to give permissions 
+chmod 777 mapper.py reducer.py  
+
+## Convert to Python script files to Unix compatible files.
+dos2unix *.py 
+
+## Make sure and Check if python script files has following lines on the top of the python script code as commented.
+#!/usr/bin/env python
+
+head -10 mapper.py 
+
+head -10 reducer.py
+
+## Incase output folder exists already then make sure to delete it.
+hadoop fs -rm -r wordcount/pythonoutput
+
+## Execute the Map Reduce job using Hadoop.
+hadoop jar /opt/mapr/hadoop/hadoop-2.7.0/share/hadoop/tools/lib/hadoop-streaming-2.7.0-mapr-1808.jar -input wordcount/input/input.txt -output wordcount/pythonoutput -mapper /home/mapr/wordcount/python/mapper.py  -reducer /home/mapr/wordcount/python/reducer.py 
+
+## Check the output directory into the Hadoop File System
+hadoop fs -ls -R wordcount/pythonoutput/
+
+## Check the output file content from the Hadoop File System
+hadoop fs -cat wordcount/pythonoutput/part-00000
+
