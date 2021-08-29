@@ -1,0 +1,596 @@
+CREATE DATABASE IF NOT EXISTS ineuron_db;
+
+
+set hive.cli.print.current.db=true;
+--set hive.exec.mode.local.auto=true;
+ 
+USE ineuron_db;
+
+SHOW DATABASES;
+
+SHOW DATABASES LIKE 'i.*';
+
+DESCRIBE DATABASE EXTENDED ineuron_db;	
+
+DROP DATABASE ineuron_db;
+
+CREATE DATABASE ineuron_db LOCATION '/user/ineuron/mydb';
+
+DESCRIBE DATABASE ineuron_db;
+
+create table  emp_details1
+(
+emp_name int,
+unit string,
+exp int,
+location string
+)
+row format delimited
+fields terminated by ',';
+
+
+DESCRIBE emp_details1;
+
+DESCRIBE FORMATTED emp_details1;
+
+SHOW TABLES LIKE '*emp*';
+
+
+DROP DATABASE IF EXISTS ineuron_db CASCADE;
+
+create table if not exists emp_details
+(
+emp_name string,
+unit string,
+exp int,
+location string
+)
+row format delimited
+fields terminated by ',';
+
+
+mkdir -p hive 
+cd hive 
+
+vi emp_details.txt 
+abc,ops,10,blr
+
+
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/emp_details.txt' INTO TABLE emp_details;
+
+select count(0) from emp_details;
+
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/mapr/hive/output'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '|'
+SELECT * FROM emp_details;
+
+
+ls -lrth 
+
+cd /home/mapr/hive
+
+ls -lrth 
+
+cd output 
+cat 00000_0 
+
+
+hadoop fs -mkdir -p /user/ineuron/hive
+
+hadoop fs -ls -R /user/ineuron/
+
+
+
+
+
+
+
+
+
+hadoop fs -put /home/mapr/hive/emp_details.txt /user/ineuron/hive
+
+
+create external table emp_details_ext
+(
+emp_name string,
+unit string,
+exp int,
+location string
+)
+row format delimited
+fields terminated by ','
+location '/user/ineuron/hive/';
+
+select count(0) from emp_details_ext ;
+
+
+cd /home/mapr/hive 
+
+vi complex_data_type.txt
+emp_id	name	location	skill_set
+101	first:Amit,last:Mishra	bbsr,751024	Hadoop,Hive
+102	first:Aditya,last:Kulkarni	bnglr,123412	Hadoop,Hive,Oracle
+
+
+create external table complex_data_type_new
+(
+emp_id int,
+name map<string, string>,
+location struct<city:string, pin:int>,
+skill_set array<string>
+)
+row format delimited fields terminated by '\t'               
+collection items terminated by ','
+map keys terminated by ':'
+LOCATION '/user/ineuron/hive'
+tblproperties ("skip.header.line.count"="1"); 
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/complex_data_type.txt'
+OVERWRITE INTO TABLE complex_data_type_new;
+
+SELECT emp_id, name['first'], name['last'],location.city,skill_set[0],skill_set[1] FROM complex_data_type_new;
+
+
+
+
+SELECT * FROM emp_details;
+
+SELECT emp_name FROM emp_details;
+
+SELECT e.emp_name FROM emp_details e;
+
+SELECT * FROM emp_details WHERE exp >= 2;
+
+SELECT * FROM emp_details WHERE unit like "%op%";
+
+
+SELECT * FROM emp_details WHERE emp_name RLIKE '.*(mi|ni).*';
+
+
+SELECT location, COUNT(*) FROM emp_details GROUP BY location;
+
+
+SELECT location, COUNT(*) FROM emp_details
+GROUP BY location
+HAVING AVG(exp) > 1.5;
+
+
+
+cd /home/mapr/hive/ 
+
+vi csv_file.csv
+name,location
+Amit, "BBSR,India"
+Sumit, "MUM,India"
+
+
+CREATE TABLE csv_table(name string, location string)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+    "separatorChar" = ",",
+    "quoteChar"     = "\"",
+    "escapeChar"    = "\\"
+)
+STORED AS TEXTFILE
+TBLPROPERTIES ("skip.header.line.count"="1")
+;
+
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/csv_file.csv'
+OVERWRITE INTO TABLE csv_table;
+
+
+select count(0) from csv_table;
+
+
+DESCRIBE FORMATTED csv_table;
+
+
+cd /home/mapr/hive/ 
+
+vi regex_file.txt
+
+host1/amit@gmail
+host2/sumit@facebook
+host3/raghav@gmail
+host4/rohit@gmail
+
+cat /home/mapr/hive/regex_file.txt
+
+
+CREATE TABLE userlog(
+ host string,
+ user_name string,
+ domain string
+ )
+ ROW FORMAT SERDE
+ 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'
+ WITH SERDEPROPERTIES(
+ 'input.regex' = '(.*)/(.*)@(.*)',
+ 'output.format.string' = '%1$s %2$s %3$s');
+
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/regex_file.txt' INTO TABLE userlog;
+
+
+SELECT host,user_name,domain FROM userlog;
+
+cd /home/mapr/hive/ 
+vi json_file.json
+
+{"name":"Amit", "id":1, "skills":["Hadoop", "Python"]}
+{"name":"Sumit", "id":2, "skills":["Hadoop", "Hive"]}
+{"name":"Rohit", "id":3, "skills":["Oozie", "Python"]}
+
+cat /home/mapr/hive/json_file.json 
+
+CREATE TABLE json_table(name string, id bigint, skills array<string>)
+ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+STORED AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/json_file.json'
+OVERWRITE INTO TABLE json_table;
+
+
+select * from json_table;
+
+select name,id,skills[0] from json_table;
+
+cd /home/mapr/hive/ 
+vi users.txt
+1	Amit	100	DNA
+2	Sumit	200	DNA
+3	Yadav	300	DNA
+4	Sunil	500	FCS
+5	Kranti	100	FCS
+6	Mahoor	200	FCS
+8	Chandra	500	DNA
+
+cat user.txt 
+
+vi locations.txt
+1	UP
+2	BIHAR
+3	MP
+4	AP
+5	MAHARASHTRA
+6	GOA
+7	JHARKHAND
+
+cat locations.txt 
+
+
+CREATE TABLE users
+(
+id INT,
+name STRING,
+salary INT,
+unit STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t';
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/users.txt'
+INTO TABLE users;
+
+CREATE TABLE locations
+(
+id INT,
+location STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t';
+
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/locations.txt'
+INTO TABLE locations;
+
+
+CREATE TABLE buck_users
+(
+id INT,
+name STRING,
+salary INT,
+unit STRING
+)
+CLUSTERED BY (id)
+SORTED BY (id)
+INTO 2 BUCKETS;
+
+CREATE TABLE buck_locations
+(
+id INT,
+location STRING
+)
+CLUSTERED BY (id)
+SORTED BY (id)
+INTO 2 BUCKETS;
+
+SET hive.enforce.bucketing=true;
+
+INSERT OVERWRITE TABLE buck_users
+SELECT * FROM users;
+
+INSERT OVERWRITE TABLE buck_locations
+SELECT * FROM locations;
+
+hadoop fs -ls -R /user/ineuron/mydb/
+
+hadoop fs -ls -R /user/ineuron/mydb/buck_locations
+
+hadoop fs -ls -R /user/ineuron/mydb/buck_users
+
+cd /home/mapr/hive
+vi emp_details2.txt 
+ABC,ops,10,BBSR
+DEF,ops,5,BBSR
+GHI,ops,2,YSR
+PQR,ops,7,MDR
+XYZ,ops,1,MDR
+
+create table emp_details2  
+(
+emp_name string,
+unit string,
+exp int,
+location string
+)
+row format delimited
+fields terminated by ',';
+
+load data local inpath '/home/mapr/hive/emp_details2.txt'
+into table emp_details2;
+
+describe formatted emp_details2;
+
+
+
+create table emp_details_partitioned
+(
+emp_name string,
+unit string,
+exp int
+)
+partitioned by (location string);
+
+
+insert overwrite table emp_details_partitioned
+partition(location = 'BBSR')
+select emp_name, unit, exp from emp_details2
+where location = 'BBSR';
+
+
+hadoop fs -ls /user/ineuron/mydb/emp_details2
+hadoop fs -ls /user/ineuron/mydb/emp_details_partitioned
+
+
+set hive.exec.dynamic.partition.mode=nonstrict;
+
+insert overwrite table emp_details_partitioned
+partition (location)
+select * from emp_details2;
+
+hadoop fs -ls /user/ineuron/mydb/emp_details_partitioned
+
+
+select count(*) from emp_details2 where location='BBSR';
+
+select count(*) from emp_details2 where name='ABC';
+
+
+
+alter table emp_details_partitioned drop partition(location='BBSR');
+
+select * From emp_details_partitioned where location='BBSR';
+
+
+hadoop fs -ls /user/ineuron/mydb/emp_details_partitioned
+
+--default is nostrict
+SET hive.mapred.mode=nostrict; 
+
+SELECT * FROM users ORDER BY name ASC;
+SELECT * FROM users SORT BY name ASC;
+
+set mapred.reduce.tasks=2;
+SELECT * FROM users SORT BY name ASC;
+
+
+
+SET mapred.reduce.tasks=2;
+SELECT * FROM users DISTRIBUTE BY unit SORT BY name ASC;
+
+
+SELECT * FROM users CLUSTER BY unit;
+
+
+
+
+SELECT * from users TABLESAMPLE(BUCKET 3 OUT OF 10 ON rand()) s;
+SELECT * from users TABLESAMPLE(BUCKET 3 OUT OF 10 ON rand()) s;
+
+SELECT * from users TABLESAMPLE(BUCKET 2 OUT OF 4 ON name) s;
+
+SELECT * FROM buck_users TABLESAMPLE(BUCKET 1 OUT OF 2 ON id) s LIMIT 1;
+
+
+cd /home/mapr/hive
+
+vi employee.csv
+101,Amit,HADOOP:HIVE:SPARK:BIG-DATA
+102,Sumit,HIVE:OOZIE:HADOOP:SPARK:STORM
+103,Rohit,KAFKA:CASSANDRA:HBASE
+
+cat employee.csv 
+
+
+CREATE TABLE employee
+(
+id INT,
+name STRING,
+skills ARRAY<STRING>
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':';
+
+LOAD DATA LOCAL INPATH '/home/mapr/hive/employee.csv'
+INTO TABLE employee;
+
+
+
+SELECT 
+size(skills),
+array_contains(skills, 'HADOOP'),
+sort_array(skills),
+concat_ws("|", skills)
+FROM employee;
+
+
+
+SELECT explode(skills) AS skills FROM employee;
+
+
+SELECT id, name, skill
+FROM employee LATERAL VIEW explode(skills) skill_set 
+AS skill;
+
+
+
+
+
+
+cd /home/mapr/hive
+
+#vi ratings.dat 
+
+
+
+create table text_table
+(
+c1 int,
+c2 int,
+c3 int,
+c4 int
+)
+row format delimited
+fields terminated by '|';
+
+---------------------------
+Loading into text table
+---------------------------
+
+load data local inpath '/home/mapr/hive/ratings_pipe.dat'
+into table text_table;
+
+---------------------------
+Creating SequenceFile table
+---------------------------
+
+create table seq_table
+(
+c1 int,
+c2 int,
+c3 int,
+c4 int
+)
+stored as SEQUENCEFILE;
+
+---------------------------
+Creating RC Format table
+---------------------------
+
+create table rc_table
+(
+c1 int,
+c2 int,
+c3 int,
+c4 int
+)
+stored as RCFILE;
+
+---------------------------
+Creating Parquet File table
+---------------------------
+
+create table prq_table
+(
+c1 int,
+c2 int,
+c3 int,
+c4 int
+)
+stored as PARQUET;
+
+---------------------------
+Creating ORC Format table
+---------------------------
+
+create table orc_table
+(
+c1 int,
+c2 int,
+c3 int,
+c4 int
+)
+stored as ORC;
+
+----------------------------------------
+Loading All the tables in a single pass
+----------------------------------------
+
+FROM text_table
+INSERT OVERWRITE TABLE seq_table SELECT *
+INSERT OVERWRITE TABLE rc_table SELECT *
+INSERT OVERWRITE TABLE prq_table SELECT *
+INSERT OVERWRITE TABLE orc_table SELECT *;
+
+
+describe formatted orc_table;
+
+hadoop fs -ls -h -R /user/ineuron/mydb/
+
+
+SET hive.exec.compress.output=true;
+SET mapred.max.split.size=256000000;
+-- block compression for sequence file
+SET mapred.output.compression.type=BLOCK; 
+SET mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec;
+
+FROM text_table
+INSERT OVERWRITE TABLE seq_table SELECT *
+INSERT OVERWRITE TABLE rc_table SELECT *
+INSERT OVERWRITE TABLE prq_table SELECT *
+INSERT OVERWRITE TABLE orc_table SELECT *;
+
+
+hadoop fs -ls -h -R /user/ineuron/mydb/
+
+Open HUE,
+http://localhost:8888
+User name : mapr 
+Password : mapr 
+
+
+SELECT * FROM buck_users u INNER JOIN buck_locations l
+ON u.id = l.id;
+
+SELECT * FROM buck_users u LEFT OUTER JOIN buck_locations l
+ON u.id = l.id;
+
+
+SELECT * FROM buck_users u RIGHT OUTER JOIN buck_locations l
+ON u.id = l.id;
+
+
+SELECT * FROM buck_users u FULL OUTER JOIN buck_locations l
+ON u.id = l.id;
+
+
+
+
+
+
