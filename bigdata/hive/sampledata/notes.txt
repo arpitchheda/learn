@@ -1,1 +1,8 @@
 This folder has Sample data files that are used in Practice and Assignment.
+
+Ratings data is downloaded via website
+http://files.grouplens.org/datasets/movielens/ml-1m.zip
+
+For more information visit,
+https://conx.readthedocs.io/en/latest/RecommendingMovies.html
+
