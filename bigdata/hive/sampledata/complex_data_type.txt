@@ -1,0 +1,3 @@
+emp_id	name	location	skill_set
+101	first:Amit,last:Mishra	bbsr,751024	Hadoop,Hive
+102	first:Aditya,last:Kulkarni	bnglr,123412	Hadoop,Hive,Oracle
