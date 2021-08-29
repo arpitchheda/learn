@@ -590,6 +590,11 @@ SELECT * FROM buck_users u FULL OUTER JOIN buck_locations l
 ON u.id = l.id;
 
 
+--------
+To close the Hive CLI.
+
+quit;
+
 
 
 
