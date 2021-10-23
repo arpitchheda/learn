@@ -1,0 +1,27 @@
+######################## Oracle ##########################################
+
+## Export dmp file via DB User
+exp <source_db_user>/<source_db_pwd>@<source_db_sid> file=<dmp_file>.dmp LOG=<export_dmp_file>.log tables=<table_1>,<table_2> ... 
+
+## Import dmp file via Sys DBA 
+imp userid='sys/sys@ora as sysdba'  file=<dmp_file>.dmp log=<import_dmp_file>.log fromuser=<source_db_user> touser=<destination_db_user>
+
+## Import dmp file via DB user 
+imp <destination_db_user>/<destination_db_pwd>@<destination_db_sid>  file=<dmp_file>.dmp log=<import_dmp_file>.log fromuser=<source_db_user> touser=<destination_db_user>
+
+## Import dmp file DATA_ONLY flag.
+imp <destination_db_user>/<destination_db_pwd>@<destination_db_hostendpoint>:<destination_db_portno>/<destination_db_sid>  file=<dmp_file>.dmp log=<import_dmp_file>.log fromuser=<source_db_user> touser=<destination_db_user> DATA_ONLY=Y
+
+
+##############################################################################
+######################### MS SQL #############################################
+
+## Export data backup of a table:
+bcp <TableName> out <TableName>.dmp -n –k -U $DB_USER_WES -P $DB_PASSWORD_WES -d $DB_NAME -S $DB_ENDPOINT -e errorexport.out
+
+## Import data in table from backup:
+bcp <TableName> in <TableName>.dmp -n –k -U $DB_USER_WES -P $DB_PASSWORD_WES -d $DB_NAME -S $DB_ENDPOINT -e errorimport.out
+
+
+##############################################################################
+
