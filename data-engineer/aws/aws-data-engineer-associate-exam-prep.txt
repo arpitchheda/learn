@@ -1,0 +1,47 @@
+AWS Data Engineer Associate Exam Details : 
+https://d1.awsstatic.com/training-and-certification/docs-data-engineer-associate/AWS-Certified-Data-Engineer-Associate_Exam-Guide.pdf
+https://aws.amazon.com/certification/certified-data-engineer-associate
+
+AWS Power Hour : Data Engineer Associate 
+https://pages.awscloud.com/GLOBAL-other-T2-Traincert-AWS-Power-Hour-Data-Engineer-Associate-Season1-2024-reg.html
+
+Free Twitch Videos
+Twitch Collection AWS Data Engineer Associate Season 1 
+https://www.twitch.tv/collections/u0PCs9ePzRerfw
+
+EP1 - https://www.twitch.tv/videos/2142205168
+EP2 - https://www.twitch.tv/videos/2148024296
+EP3 - https://www.twitch.tv/videos/2154016926
+EP4 - https://www.twitch.tv/videos/2163489565
+EP5 - https://www.twitch.tv/videos/2166825203
+EP6 - https://www.twitch.tv/videos/2174677466
+
+Free Official AWS SkillBuilder Practice Test
+https://explore.skillbuilder.aws/learn/course/18546/exam-prep-standard-course-aws-certified-data-engineer-associate-dea-c01
+
+Free for Partner Network (Example : Accenture Employees) 16 Hour Course Material 
+https://explore.skillbuilder.aws/learn/lp/2071/aws-certified-data-engineer-associate-partner
+
+
+Free Sample Questions 
+https://www.youtube.com/playlist?list=PL7GozF-qZ4KdbfjTu8iRW6uvlF0zf8M3U
+
+https://www.examtopics.com/exams/amazon/aws-certified-data-engineer-associate-dea-c01/view/
+
+https://itexambyte.com/free-questions-on-aws-data-engineer-associate/
+
+Free Exam Revision
+https://zlliu.medium.com/raw-practice-notes-dump-aws-data-engineer-associate-week-1-e2efbda5c6be
+
+Free Flash Cards
+https://portal.tutorialsdojo.com/courses/aws-certified-data-engineer-associate-practice-exam-dea-c01/lessons/bonus-section-flashcards-36/topic/aws-certified-data-engineer-associate-dea-c01-flash-cards-part-1/
+
+Paid Courses on Udemy
+https://www.udemy.com/course/aws-data-engineer/
+https://www.udemy.com/course/practice-exams-aws-certified-data-engineer-associate/
+
+Paid Courses Tutorials Dojo
+https://portal.tutorialsdojo.com/courses/aws-certified-data-engineer-associate-practice-exam-dea-c01/
+
+Paid Practice Exam Questions 
+https://skillcertpro.com/product/aws-data-engineer-associate-dea-c01-exam-questions/
