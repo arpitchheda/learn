@@ -22,6 +22,8 @@ https://explore.skillbuilder.aws/learn/course/18546/exam-prep-standard-course-aw
 Free for Partner Network (Example : Accenture Employees) 16 Hour Course Material 
 https://explore.skillbuilder.aws/learn/lp/2071/aws-certified-data-engineer-associate-partner
 
+Free YouTube AWS Data Engineer Exam Preparation Content 
+https://youtu.be/S_RygRykNDE?feature=shared
 
 Free Sample Questions 
 https://www.youtube.com/playlist?list=PL7GozF-qZ4KdbfjTu8iRW6uvlF0zf8M3U
